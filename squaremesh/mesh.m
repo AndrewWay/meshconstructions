@@ -63,6 +63,7 @@ boxed=zeros(n,1);
 for i=1:n %For every point
     fprintf('%d\n',i);
     p=[x(i),y(i)]; %pick each point
+    disp(p);
     %Calculate its grid position TODO
     gridpos=[abs(floor(p(1)/d)+1),abs(floor(p(2)/d)+1)];
     disp(gridpos);
@@ -71,44 +72,48 @@ for i=1:n %For every point
     for s=0:maxstds
         queryradius=ave_sep+s*std_sep;%TODO Prevent searching same areas
         for j=1:n
+            fprintf('j: %d\n',j);
              newp=[x(j),y(j)];
              sepdistance=abs(norm(newp-p));
              if (sepdistance <= queryradius)
-                 s=maxstds+1;%Terminate any further searches
+                s=maxstds+1;%Terminate any further searches
                 %Connect the two points with boxes
-                enclosed=0;
-                center=p;
-                while ( enclosed == 0)
-                    vec=newp-center;
-                    [th,rh]=cart2pol(vec(1),vec(2));
-                    th=th*180/3.145678;
-                    if(th>315)
-                       th=th-360; 
-                    end
-                    if(th > -45 && th <= 45)
-                        center(1)=center(1)+d;%Shift the box right
-                        gridpos(1)=round(gridpos(1)+1);
-                    elseif(th > 45 && th <= 135)
-                        center(2)=center(2)+d;%Shift the box up   
-                        gridpos(2)=round(gridpos(2)+1);
-                    elseif(th > 135 && th <= 225)
-                        center(1)=center(1)-d;%Shift the box left
-                        gridpos(1)=round(gridpos(1)-1);
-                    elseif(th > 225 && th <= 315)
-                        center(2)=center(2)-d;%Shift the box down
-                        gridpos(2)=round(gridpos(2)-1);
-                    else
-                       fprintf('ERROR IN THETA\n'); 
-                    end
-                    grid(uint16(gridpos(1)),uint16(gridpos(2)))=1;
-                    [v1,v2,v3,v4] = gridvertices(gridpos(1),gridpos(2),d);
-                    if(newp(1) <= v2(1) && newp(1) >= v1(1) && newp(2) >= v3(2) && newp(2) <= v1(2))
-                        fprintf('point enclosed\n');
-                        enclosed=1;
-                    end
-                end
+                disp(newp);
              end
         end
+        
+        %Connect all the nearest neighbors with boxes
+        enclosed=0;
+        center=p;
+     %   while ( enclosed == 0)
+            vec=newp-center;
+            [th,rh]=cart2pol(vec(1),vec(2));
+            th=th*180/3.145678;
+            if(th>315)
+                th=th-360;
+            end
+            if(th > -45 && th <= 45)
+                center(1)=center(1)+d;%Shift the box right
+                gridpos(1)=round(gridpos(1)+1);
+            elseif(th > 45 && th <= 135)
+                center(2)=center(2)+d;%Shift the box up
+                gridpos(2)=round(gridpos(2)+1);
+            elseif(th > 135 && th <= 225)
+                center(1)=center(1)-d;%Shift the box left
+                gridpos(1)=round(gridpos(1)-1);
+            elseif(th > 225 && th <= 315)
+                center(2)=center(2)-d;%Shift the box down
+                gridpos(2)=round(gridpos(2)-1);
+            else
+                fprintf('ERROR IN THETA\n');
+            end
+            grid(uint16(gridpos(1)),uint16(gridpos(2)))=1;
+            [v1,v2,v3,v4] = gridvertices(gridpos(1),gridpos(2),d);
+            if(newp(1) <= v2(1) && newp(1) >= v1(1) && newp(2) >= v3(2) && newp(2) <= v1(2))
+                fprintf('point enclosed\n');
+                enclosed=1;
+            end
+    %    end        
     end
 end
 

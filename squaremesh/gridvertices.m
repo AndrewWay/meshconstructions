@@ -19,6 +19,11 @@ function [ v1,v2,v3,v4 ] = gridvertices( i,j,d)
     v4x=-(i)*d;
     v4y=-(j)*d;
     
+    v1=[v1x,v1y];
+    v2=[v2x,v2y];
+    v3=[v3x,v3y];
+    v4=[v4x,v4y];
+    
 
 end
 
