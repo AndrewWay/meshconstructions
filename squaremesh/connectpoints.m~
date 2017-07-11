@@ -1,0 +1,64 @@
+function [ updatedgrid ] = connectpoints( grid,p,newp,d )
+%CONNECTPOINTS Summary of this function goes here
+%   Detailed explanation goes here
+enclosed=0;
+center=p;%Starting box location
+updatedgrid=grid;
+gridpos=[abs(floor(abs(p(2))/d)+1),abs(floor(p(1)/d)+1)];%Calculate its grid position
+g1=uint16(gridpos(1));
+g2=uint16(gridpos(2));
+updatedgrid(g1,g2)=1;
+%gridpos
+%p
+%newp
+for i=1:10 %While the neighbor is not boxed in
+   % center
+    vec=newp-center%Calculate the vector connecting the current
+    if(vec(1) == 0 && vec(2) == 0)
+       % fprintf('new point = point\n');
+        enclosed=1;
+        g1=uint16(gridpos(1));
+        g2=uint16(gridpos(2));
+        updatedgrid(g1,g2)=1;
+        break;
+    end
+    [th,rh]=cart2pol(vec(1),vec(2)); %find the polar angle of that vector
+    th=th*180/3.145678 %Convert the polar angle to degrees
+    %fprintf('P1: %d P2: %d Theta: %d\n',p(1),p(2),th);
+    %fprintf('Center: (%d,%d) \n',center(1),center(2));
+    while(th>315)
+        th=th-360;
+    end
+    while(th < -45)
+        th=th+360;
+    end
+    if(th > -45 && th <= 45)
+        %fprintf('RIGHT\n');
+        center(1)=center(1)+d;%Shift the box right
+        gridpos(2)=floor(gridpos(2)+1);
+    elseif(th > 45 && th <= 135)
+      %  fprintf('UP\n');
+        center(2)=center(2)+d;%Shift the box up
+        gridpos(1)=floor(gridpos(1)-1);
+    elseif(th > 135 && th <= 225)
+       % fprintf('LEFT\n');
+        center(1)=center(1)-d;%Shift the box left
+        gridpos(2)=floor(gridpos(2)-1);
+    elseif(th > 225 && th <= 315)
+       % fprintf('DOWN\n');
+        center(2)=center(2)-d;%Shift the box down
+        gridpos(1)=floor(gridpos(1)+1);
+    else
+        fprintf('ERROR IN THETA\n');
+    end
+    g1=uint16(gridpos(1));
+    g2=uint16(gridpos(2));
+    updatedgrid(g1,g2)=1;%Indicate a box is placed on grid point (g1,g2)
+    [v1,v2,v3,v4] = square(center(1),center(2),d); %Calculate the vertices of the current box in cartesian
+    if(newp(1) <= v1(1) && newp(1) >= v2(1) && newp(2) >= v3(2) && newp(2) <= v1(2))
+        fprintf('point enclosed\n');
+        enclosed=1;
+    end
+end
+updatedgrid
+end
