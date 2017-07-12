@@ -8,12 +8,9 @@ gridpos=[abs(round(abs(p(2))/d)+1),abs(round(p(1)/d)+1)];%Calculate its grid pos
 g1=uint16(gridpos(1));
 g2=uint16(gridpos(2));
 updatedgrid(g1,g2)=1;
-%gridpos
-%p
-newp
+
 while(enclosed==0) %While the neighbor is not boxed in
-    center
-    vec=newp-center%Calculate the vector connecting the current
+    vec=newp-center;%Calculate the vector connecting the current
     if(vec(1) == 0 && vec(2) == 0)
        % fprintf('new point = point\n');
         enclosed=1;
@@ -33,34 +30,33 @@ while(enclosed==0) %While the neighbor is not boxed in
         th=th+360;
     end
     if(th > -45 && th <= 45)
-        fprintf('RIGHT\n');
+       % fprintf('RIGHT\n');
         center(1)=center(1)+d;%Shift the box right
         gridpos(2)=gridpos(2)+1;
     elseif(th > 45 && th <= 135)
-        fprintf('UP\n');
+      %  fprintf('UP\n');
         center(2)=center(2)+d;%Shift the box up
         gridpos(1)=gridpos(1)-1;
     elseif(th > 135 && th <= 225)
-        fprintf('LEFT\n');
+       % fprintf('LEFT\n');
         center(1)=center(1)-d;%Shift the box left
         gridpos(2)=gridpos(2)-1;
     elseif(th > 225 && th <= 315)
-        fprintf('DOWN\n');
+       % fprintf('DOWN\n');
         center(2)=center(2)-d;%Shift the box down
         gridpos(1)=gridpos(1)+1;
     else
         fprintf('ERROR IN THETA\n');
     end
     [v1,v2,v3,v4] = square(center(1),center(2),d); %Calculate the vertices of the current box in cartesian
-    fprintf('[%d,%d,%d] [%d,%d,%d]\n',v2(1),newp(1),v1(1),v3(2),newp(2),v2(2));
+  %  fprintf('[%d,%d,%d] [%d,%d,%d]\n',v2(1),newp(1),v1(1),v3(2),newp(2),v2(2));
     if(newp(1) <= v1(1) && newp(1) >= v2(1) && newp(2) >= v3(2) && newp(2) <= v2(2))
-        fprintf('point enclosed\n');
+       % fprintf('point enclosed\n');
         enclosed=1;
     else
-           g1=uint16(gridpos(1))
-           g2=uint16(gridpos(2))
+           g1=uint16(gridpos(1));
+           g2=uint16(gridpos(2));
            updatedgrid(g1,g2)=1;%Indicate a box is placed on grid point (g1,g2)
     end
 end
-updatedgrid
 end

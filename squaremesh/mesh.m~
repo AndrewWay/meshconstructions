@@ -1,26 +1,12 @@
 import java.util.LinkedList;
 
 %PARAMETERS
-n=300; % number of points
-d=0.002; % Dimension of square
+n=10; % number of points
+d=0.2; % Dimension of square
 maxstds=1;
-x=zeros(n,1);
-y=zeros(n,1);
-radius=1;
-
-%CIRCLE DATA
-angle_inc=2*3.145678/n
-for i=1:n
-    angle=(i-1)*angle_inc;
-    x(i)=cos(angle)*radius;
-    y(i)=sin(angle)*radius;
-end
-
-%RANDOM DATA
-%x = randn(n,1);
-%y = randn(n,1);
-
-
+%DATASET
+x = randn(n,1);
+y = randn(n,1);
 minsep=zeros(n,1);
 sum=0;
 
@@ -33,7 +19,8 @@ y_min=min(y);
 %Shift all the data 
 y=y-y_max;
 x=x-x_min;
-
+disp(x);
+disp(y);
 %Set the grid width and height
 grid_width=abs(x_max-x_min);
 grid_height=abs(y_max-y_min);
@@ -72,21 +59,21 @@ for i=1:n %For every point
 end
 
 
+disp(grid);
+
+
+
 %PLOT THE RESULT
+
 scatter(x,y)
-hold on
-for i=1:grid_hunits
-    for j=1:grid_wunits
+%hold on
+for i=1:n
+    for j=1:n
         if(grid(i,j) == 1)
-           xbox=d*((j-1)+1/2);
-           ybox=-d*((i-1)+1/2);
-           [v1,v2,v3,v4]=square(xbox,ybox,d);
-           xpoints=[v1(1),v2(1),v3(1),v4(1),v1(1)];
-           ypoints=[v1(2),v2(2),v3(2),v4(2),v1(2)];
-           plot(xpoints,ypoints);
+           y=
         end
     end
 end
 %plot(w,z,'.-');
 
-hold off
+%hold off
